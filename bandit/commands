@@ -1,0 +1,94 @@
+1:
+cat ./-
+
+4:
+ls | xargs -I {} file ./{}
+
+5:
+shopt -s dotglob
+shopt dotglob
+for dir in ./*; do
+    for filename in "$dir/"*; do
+        echo "Checking $filename"
+        du -h "$filename"
+        file "$filename"
+        ls -l "$filename"
+    done
+done
+
+OR
+
+# https://stackoverflow.com/questions/246215/how-can-i-generate-a-list-of-files-with-their-absolute-path-in-linux
+
+Attempts:
+ls | xargs -n 1 ls | xargs -I {} echo "'./{}'"
+
+ls | xargs -n 1 find | xargs -I {} file {} | column -s ':' -t
+ls | xargs -n 1 find | xargs -I {} du -b {}
+ls | xargs -n 1 find | xargs -I {} ls -l {}
+
+ls | xargs -n 1 find | xargs -I {} file {} | grep -v -e 'data' -e 'directory'
+ls | xargs -n 1 find | xargs -I {} file {} | grep -v -e 'data' -e 'directory' | awk -F ':' '{ print $1 }' | xargs -I {} du -b {} | grep 1033
+ls | xargs -n 1 find | xargs -I {} file {} | grep -v -e 'data' -e 'directory' | awk -F ':' '{ print $1 }' | xargs -I {} ls -l {} | grep -v 'x'
+
+Solution:
+ls | xargs -n 1 find | xargs -I {} du -b {} | grep 1033
+
+6:
+find / -user bandit7 -group bandit6 2> /dev/null | xargs -I {} du -b {}
+
+7:
+grep 'millionth' data.txt
+
+8:
+sort data.txt | uniq -c
+sort data.txt | uniq -u
+
+9:
+xxd data.txt | grep -E '==+' -B 2 -A 2
+
+10:
+base64 -d data.txt
+
+11:
+cat data.txt | tr 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' 'nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM'
+
+12:
+cat data.txt | xxd -r -p
+
+Solution:
+cat data.txt | xxd -r > foo.zip
+file foo.zip
+mv foo.zip data2.gz
+gzip -d data2.gz
+file data2
+bzip2 -d data2
+file data2.out
+mv data2.out data4.gz
+gzip -d data4.gz
+file data4
+tar -xvf data4
+file data5.bin
+tar -xvf data5.bin
+file data6.bin
+bzip2 -d data6.bin
+file data6.bin.out
+tar -xvf data6.bin.out
+file data8.bin
+mv data8.bin data9.gz
+gzip -d data9.gz
+cat data9
+
+13:
+cat sshkey.private
+exit # leave ssh session
+chmod go-r assets/bandit14-ssh-private-key
+ssh -i ./assets/bandit14-ssh-private-key bandit14@bandit.labs.overthewire.org -p 2220
+
+14:
+cat /etc/bandit_pass/bandit14
+man nc
+nc localhost 30000
+
+15:
+man s_client
